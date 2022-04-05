@@ -5,18 +5,24 @@ const randomString = require("./randomString");
 const verifyKey = (key) => {
     const keygen = new Cryptr(config.keygen);
 
-    try { keygen.decrypt(key); }
-    catch { return false; }
+    let success = true;
 
-    return true;
+    let decryptedSalt = "";
+
+    try { decryptedSalt = keygen.decrypt(key.split(".")[1]); }
+    catch { success = false; }
+
+    if (decryptedSalt !== key.split(".")[0]) success = false;
+
+    return success;
 }
 
 module.exports = {
     genKey: () => {
         const keygen = new Cryptr(config.keygen);
-        const salt = randomString(16);
+        const salt = randomString(32);
 
-        return keygen.encrypt(salt);
+        return salt + "." + keygen.encrypt(salt);
     },
 
     encrypt: (string, key) => {
