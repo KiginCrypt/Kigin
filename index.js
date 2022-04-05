@@ -15,10 +15,11 @@ app.use(require("cors")());
 app.use(express.json());
 
 app.get("/kigin/generateKey", require("./routes/generateKey"));
+app.get("/kigin/verifyKey", require("./routes/verifyKey"));
 
-app.post("/kigin/create/note", require("./routes/create/note"));
-app.get("/kigin/get/note/:id", require("./routes/get/note/_id"));
-app.get("/kigin/get/notes", require("./routes/get/notes"));
+app.post("/kigin/create", require("./routes/create"));
+app.get("/kigin/get/all", require("./routes/get/all"));
+app.get("/kigin/get/:id", require("./routes/get/_id"));
 
 app.use("*", (req, res) => {
     return res.status(404).send({ status: "NOT_FOUND" });

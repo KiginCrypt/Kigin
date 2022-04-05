@@ -6,10 +6,10 @@ module.exports = (req, res) => {
 
     // Check if key (syntax-wise) is valid
     if (!key) return res.send({ status: "NO_KEY" });
-    if (key.length !== 289 || key.charAt(32) !== ".") return res.send({ status: "KEY_INCORRECT" });
+    if (key.length < 289 || key.charAt(32) !== ".") return res.send({ status: "KEY_INCORRECT" });
 
     // Get results
-    const results = db.prepare("SELECT id FROM notes WHERE ownedBy = ? ORDER BY createdAt DESC;").all([key.split(".")[0]]);
+    const results = db.prepare("SELECT id FROM document WHERE ownedBy = ? ORDER BY createdAt DESC;").all([key.split(".")[0]]);
 
     // Put all the IDs in an ID array
     let ids = [];

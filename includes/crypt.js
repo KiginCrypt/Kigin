@@ -7,23 +7,31 @@ const verifyKey = (key) => {
 
     let success = true;
 
-    let decryptedSalt = "";
+    let verifier = "";
 
-    try { decryptedSalt = keygen.decrypt(key.split(".")[1]); }
+    // Try to decrypt
+    try { verifier = keygen.decrypt(key.split(".")[1]); }
     catch { success = false; }
 
-    if (decryptedSalt !== key.split(".")[0]) success = false;
+    // Check if verifier contains identifier
+    if (verifier.split(".")[0] !== key.split(".")[0]) success = false;
+    
+    // Check if verifier contains pincode
+    if (verifier.split(".")[1] !== key.split(".")[2]) success = false;
 
     return success;
 }
 
 module.exports = {
-    genKey: () => {
+    genKey: (pincode) => {
         const keygen = new Cryptr(config.keygen);
-        const salt = randomString(32);
+        const identifier = randomString(32);
+        const verifier = identifier + "." + pincode;
 
-        return salt + "." + keygen.encrypt(salt);
+        return identifier + "." + keygen.encrypt(verifier);
     },
+
+    verifyKey,
 
     encrypt: (string, key) => {
         if (!verifyKey(key)) return false;
